@@ -1,0 +1,83 @@
+# Card Price Research — Render.com Deploy Guide
+# ===============================================
+# Live in 10 minutes — simplest option!
+
+## STEP 1 — Create a free GitHub account (needed for Render)
+If you don't have one: https://github.com/signup
+Just needs an email — takes 2 minutes
+
+## STEP 2 — Upload your files to GitHub
+1. Go to https://github.com/new
+2. Repository name: cardpriceresearch
+3. Set to Public
+4. Click "Create repository"
+5. On the next page click "uploading an existing file"
+6. Drag ALL files from the cardpriceresearch-render folder:
+   - server.js
+   - package.json
+   - public/index.html  ← make sure to upload this inside a "public" folder
+7. Click "Commit changes"
+
+## STEP 3 — Sign up for Render (free)
+1. Go to https://render.com
+2. Click "Get Started for Free"
+3. Sign up with GitHub (easiest — links your repos automatically)
+
+## STEP 4 — Deploy on Render (3 clicks!)
+1. On Render dashboard click "New +" → "Web Service"
+2. Find your "cardpriceresearch" GitHub repo → click "Connect"
+3. Fill in the settings:
+   Name:          cardpriceresearch
+   Region:        Pick closest to you
+   Branch:        main
+   Runtime:       Node
+   Build Command: npm install
+   Start Command: node server.js
+   Plan:          Free
+4. Click "Create Web Service"
+5. Wait ~2 minutes — you get a live URL like:
+   https://cardpriceresearch.onrender.com
+
+## STEP 5 — Add your Anthropic API Key
+1. Get key at https://console.anthropic.com → API Keys → Create Key
+2. In Render → your service → "Environment" tab
+3. Click "Add Environment Variable"
+   Key:   ANTHROPIC_API_KEY
+   Value: sk-ant-...your-key...
+4. Click "Save Changes" — Render auto-restarts
+
+## STEP 6 — Connect your domain (cardpriceresearch.com)
+1. Render → your service → "Settings" → "Custom Domains"
+2. Click "Add Custom Domain"
+3. Type: cardpriceresearch.com → click "Save"
+4. Render shows you a CNAME record
+
+Log into tier.net DNS and add:
+   Type    Host    Value
+   CNAME   @       your-app.onrender.com
+   CNAME   www     your-app.onrender.com
+
+Wait 10-30 mins for DNS — SSL is automatic!
+
+## STEP 7 — Test it!
+Visit https://cardpriceresearch.com
+Search "Charizard Base Set" → results in 5-10 seconds 🎉
+
+## IMPORTANT — Free tier note
+Render's free tier "spins down" after 15 mins of inactivity.
+First visit after idle takes ~30 seconds to wake up.
+To avoid this, upgrade to the $7/month "Starter" plan later.
+
+## TROUBLESHOOTING
+- Build failed     → Check server.js and package.json uploaded correctly
+- Search not working → Check API key in Environment tab, no spaces
+- Site not loading  → Check DNS propagation at dnschecker.org
+- Slow first load   → Normal on free tier (spinning up) — wait 30 secs
+
+## FILE STRUCTURE
+cardpriceresearch-render/
+├── server.js          ← Express server + API proxy
+├── package.json       ← Node dependencies
+├── DEPLOY_GUIDE.txt   ← This file
+└── public/
+    └── index.html     ← Your full website
