@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Card Price Research — Trading Card Price Guide</title>
+<meta name="description" content="Real-time trading card prices for Pokemon, NFL, NBA, WWE and MLB. PSA grades, buy links, and market trends.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy:#0F0D2E; --deep:#080618; --mid:#1a1740;
+    --border:#2E2A6A; --purple:#7C3AED; --blue:#2563EB;
+    --lavender:#C4B5FD; --sky:#60A5FA; --soft:#E0D9FF;
+    --muted:#94a3b8; --dim:#475569; --faint:#334155;
+    --green:#10b981; --red:#f87171; --amber:#fbbf24;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{background:var(--deep);color:#e2e8f0;font-family:'DM Sans',sans-serif;min-height:100vh;}
+
+  /* ── NAV ── */
+  nav{background:var(--navy);border-bottom:1px solid var(--border);padding:0 32px;height:60px;display:flex;align-items:center;justify-content:space-between;gap:16px;position:sticky;top:0;z-index:100;}
+  .logo{display:flex;align-items:center;gap:10px;text-decoration:none;}
+  .logo-bar{width:5px;height:36px;background:var(--purple);border-radius:3px;flex-shrink:0;}
+  .logo-text{display:flex;flex-direction:column;gap:1px;}
+  .logo-title{font-family:'Syne',sans-serif;font-size:15px;font-weight:800;color:var(--soft);letter-spacing:1.5px;line-height:1;}
+  .logo-sub{font-size:8px;font-weight:300;color:var(--sky);letter-spacing:6px;line-height:1;margin-top:2px;}
+  .nav-links{display:flex;gap:24px;}
+  .nav-links a{font-size:13px;color:var(--muted);text-decoration:none;font-weight:500;transition:color .15s;}
+  .nav-links a:hover{color:var(--lavender);}
+  @media(max-width:640px){.nav-links{display:none;}}
+
+  /* ── HERO ── */
+  .hero{background:var(--navy);padding:56px 32px 44px;text-align:center;border-bottom:1px solid var(--border);position:relative;overflow:hidden;}
+  .hero::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:600px;height:300px;background:radial-gradient(ellipse,rgba(124,58,237,0.15) 0%,transparent 70%);pointer-events:none;}
+  .hero h1{font-family:'Syne',sans-serif;font-size:36px;font-weight:800;color:var(--soft);letter-spacing:-0.5px;margin-bottom:10px;position:relative;}
+  .hero h1 span{color:var(--purple);}
+  .hero p{font-size:14px;color:var(--muted);max-width:480px;margin:0 auto 28px;line-height:1.7;position:relative;}
+  .search-box{display:flex;gap:10px;max-width:560px;margin:0 auto 20px;position:relative;}
+  .search-box input{flex:1;background:var(--mid);border:1px solid var(--border);border-radius:12px;padding:13px 18px;font-size:14px;color:#e2e8f0;font-family:'DM Sans',sans-serif;outline:none;transition:border-color .2s;}
+  .search-box input:focus{border-color:var(--purple);}
+  .search-box input::placeholder{color:var(--dim);}
+  .btn-primary{background:var(--purple);color:white;border:none;border-radius:12px;padding:13px 24px;font-size:14px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap;transition:opacity .15s,transform .1s;}
+  .btn-primary:hover{opacity:.88;}
+  .btn-primary:active{transform:scale(.97);}
+  .btn-primary:disabled{opacity:.5;cursor:not-allowed;}
+  .sport-row{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;}
+  .sport-pill{background:var(--mid);border:1px solid var(--border);border-radius:20px;padding:6px 16px;font-size:12px;font-weight:700;color:var(--muted);cursor:pointer;transition:all .15s;}
+  .sport-pill:hover{border-color:var(--purple);color:var(--lavender);}
+  .sport-pill.active{background:var(--purple);border-color:var(--purple);color:white;}
+
+  /* ── FILTERS ── */
+  .filters{background:var(--navy);border-bottom:1px solid var(--border);padding:12px 32px;display:flex;gap:12px;align-items:center;flex-wrap:wrap;}
+  .filter-label{font-size:11px;font-weight:700;color:var(--dim);letter-spacing:.06em;text-transform:uppercase;}
+  .filter-select{background:var(--mid);border:1px solid var(--border);border-radius:8px;padding:6px 12px;font-size:12px;color:#e2e8f0;font-family:'DM Sans',sans-serif;cursor:pointer;outline:none;transition:border-color .15s;}
+  .filter-select:focus{border-color:var(--purple);}
+
+  /* ── STATS ── */
+  .stats{background:var(--deep);border-bottom:1px solid var(--border);display:flex;}
+  .stat{flex:1;text-align:center;padding:14px 8px;border-right:1px solid var(--border);}
+  .stat:last-child{border-right:none;}
+  .stat-val{font-family:'Syne',sans-serif;font-size:17px;font-weight:800;color:var(--lavender);}
+  .stat-lbl{font-size:10px;color:var(--dim);text-transform:uppercase;letter-spacing:.05em;margin-top:2px;}
+
+  /* ── MAIN CONTENT ── */
+  main{max-width:1100px;margin:0 auto;padding:28px 24px;}
+
+  /* ── TRENDING ── */
+  .section-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+  .section-title{font-family:'Syne',sans-serif;font-size:15px;font-weight:800;color:var(--soft);letter-spacing:.5px;}
+  .see-all{font-size:12px;color:var(--purple);font-weight:700;cursor:pointer;text-decoration:none;}
+  .trending-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;margin-bottom:32px;}
+  .trend-card{background:var(--navy);border:1px solid var(--border);border-radius:12px;overflow:hidden;cursor:pointer;transition:border-color .15s,transform .15s;}
+  .trend-card:hover{border-color:var(--purple);transform:translateY(-2px);}
+  .trend-img{height:90px;display:flex;align-items:center;justify-content:center;font-size:36px;background:var(--mid);position:relative;}
+  .trend-badge{position:absolute;top:6px;right:6px;border-radius:5px;padding:2px 7px;font-size:10px;font-weight:700;}
+  .badge-up{background:rgba(16,185,129,.9);color:white;}
+  .badge-down{background:rgba(248,113,113,.85);color:white;}
+  .badge-hot{background:rgba(124,58,237,.9);color:white;}
+  .trend-body{padding:10px 12px;}
+  .trend-name{font-size:12px;font-weight:700;color:var(--soft);margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .trend-set{font-size:10px;color:var(--dim);margin-bottom:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .trend-price{font-family:'Syne',sans-serif;font-size:15px;font-weight:800;color:var(--lavender);}
+  .trend-cond{font-size:10px;color:var(--dim);}
+
+  /* ── RESULTS ── */
+  #results{margin-bottom:32px;}
+  .result-card{background:var(--navy);border:1px solid var(--border);border-radius:16px;overflow:hidden;margin-bottom:20px;animation:slideIn .3s ease;}
+  @keyframes slideIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+  .result-hdr{background:var(--mid);padding:14px 20px;display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap;border-bottom:1px solid var(--border);}
+  .result-name{font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:var(--soft);}
+  .result-meta{font-size:12px;color:var(--dim);margin-top:3px;}
+  .trend-pill{padding:4px 12px;border-radius:20px;font-size:11px;font-weight:700;}
+  .pill-up{background:rgba(16,185,129,.15);color:var(--green);border:1px solid rgba(16,185,129,.3);}
+  .pill-down{background:rgba(248,113,113,.12);color:var(--red);border:1px solid rgba(248,113,113,.3);}
+  .pill-stable{background:rgba(96,165,250,.12);color:var(--sky);border:1px solid rgba(96,165,250,.3);}
+  .conf-dot{font-size:11px;font-weight:700;}
+  .conf-high{color:var(--green);}.conf-medium{color:var(--amber);}.conf-low{color:var(--red);}
+
+  .price-table{width:100%;}
+  .price-row{display:flex;align-items:center;padding:11px 20px;border-bottom:1px solid #0d0b20;gap:8px;}
+  .price-row:last-child{border-bottom:none;}
+  .price-row.highlight{background:rgba(124,58,237,.06);}
+  .price-cond{font-size:13px;color:var(--muted);flex:1;font-weight:500;}
+  .price-val{font-family:'Syne',sans-serif;font-size:14px;font-weight:800;color:var(--lavender);min-width:90px;text-align:right;}
+  .price-note{font-size:11px;color:var(--faint);min-width:100px;text-align:right;}
+  .buy-btn{background:var(--purple);color:white;border:none;border-radius:7px;padding:5px 12px;font-size:11px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;text-decoration:none;display:inline-block;transition:opacity .15s;white-space:nowrap;}
+  .buy-btn:hover{opacity:.85;}
+
+  .result-footer{padding:14px 20px;border-top:1px solid var(--border);display:flex;flex-direction:column;gap:10px;}
+  .analysis{font-size:13px;color:var(--muted);line-height:1.7;}
+  .buy-tip{background:rgba(124,58,237,.08);border:1px solid rgba(124,58,237,.2);border-radius:8px;padding:10px 14px;font-size:13px;color:var(--lavender);font-weight:500;}
+  .buy-links{display:flex;gap:8px;flex-wrap:wrap;}
+  .link-btn{background:var(--mid);border:1px solid var(--border);border-radius:8px;padding:6px 14px;font-size:12px;font-weight:700;color:var(--muted);text-decoration:none;transition:all .15s;}
+  .link-btn:hover{border-color:var(--purple);color:var(--lavender);}
+
+  /* ── LOADING ── */
+  .loading{display:none;text-align:center;padding:48px 20px;}
+  .pokeball{width:48px;height:48px;border-radius:50%;border:4px solid var(--blue);background:linear-gradient(180deg,var(--purple) 50%,white 50%);margin:0 auto 16px;position:relative;animation:spin .8s linear infinite;}
+  .pokeball::before{content:'';position:absolute;top:50%;left:-4px;right:-4px;height:4px;background:var(--blue);transform:translateY(-50%);}
+  .pokeball::after{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:12px;height:12px;border-radius:50%;background:white;border:3px solid var(--blue);}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .loading-text{font-size:14px;font-weight:500;color:var(--muted);}
+
+  .error-box{background:rgba(248,113,113,.08);border:1px solid rgba(248,113,113,.3);border-radius:10px;padding:14px 18px;color:var(--red);font-size:13px;margin-bottom:20px;display:none;}
+
+  /* ── PRICE TABLE PREVIEW ── */
+  .featured{margin-bottom:32px;}
+  .featured-card{background:var(--navy);border:1px solid var(--border);border-radius:14px;overflow:hidden;}
+  .featured-hdr{background:var(--mid);padding:14px 20px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);}
+  .featured-title{font-family:'Syne',sans-serif;font-size:14px;font-weight:800;color:var(--soft);}
+  .featured-sub{font-size:11px;color:var(--dim);margin-top:2px;}
+  .rarity-badge{background:rgba(124,58,237,.2);color:var(--lavender);border:1px solid rgba(124,58,237,.3);border-radius:6px;padding:3px 10px;font-size:11px;font-weight:700;}
+
+  /* ── FOOTER ── */
+  footer{background:var(--navy);border-top:1px solid var(--border);padding:24px 32px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;}
+  .footer-logo{display:flex;align-items:center;gap:8px;}
+  .footer-bar{width:4px;height:28px;background:var(--purple);border-radius:2px;}
+  .footer-title{font-family:'Syne',sans-serif;font-size:13px;font-weight:800;color:var(--soft);letter-spacing:1px;}
+  .footer-links{display:flex;gap:20px;}
+  .footer-links a{font-size:12px;color:var(--dim);text-decoration:none;transition:color .15s;}
+  .footer-links a:hover{color:var(--muted);}
+  .footer-copy{font-size:11px;color:var(--faint);}
+
+  @media(max-width:480px){
+    .hero h1{font-size:26px;}
+    .search-box{flex-direction:column;}
+    .filters{flex-direction:column;align-items:flex-start;}
+    .stats{flex-wrap:wrap;}
+    .stat{min-width:50%;}
+    .price-note{display:none;}
+    footer{flex-direction:column;text-align:center;}
+    .footer-links{justify-content:center;}
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="/" class="logo">
+    <div class="logo-bar"></div>
+    <div class="logo-text">
+      <div class="logo-title">CARD PRICE</div>
+      <div class="logo-sub">RESEARCH</div>
+    </div>
+  </a>
+  <div class="nav-links">
+    <a href="#trending">Trending</a>
+    <a href="#search-section">Search</a>
+    <a href="#featured">Featured</a>
+    <a href="#">About</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="search-section">
+  <h1>The ultimate <span>card price</span> research tool</h1>
+  <p>Real-time prices, images &amp; buy links for Pokémon, NFL, NBA, WWE and MLB cards — powered by AI web search.</p>
+  <div class="search-box">
+    <input type="text" id="search-input" placeholder="Search any card, player, or set..." autocomplete="off" />
+    <button class="btn-primary" id="search-btn" onclick="doSearch()">Search</button>
+  </div>
+  <div class="sport-row" id="sport-row">
+    <div class="sport-pill active" data-sport="Pokemon" onclick="setSport(this)">All</div>
+    <div class="sport-pill" data-sport="Pokemon" onclick="setSport(this)">Pokémon</div>
+    <div class="sport-pill" data-sport="Football (NFL)" onclick="setSport(this)">Football</div>
+    <div class="sport-pill" data-sport="Basketball (NBA)" onclick="setSport(this)">Basketball</div>
+    <div class="sport-pill" data-sport="WWE Wrestling" onclick="setSport(this)">WWE</div>
+    <div class="sport-pill" data-sport="Baseball (MLB)" onclick="setSport(this)">Baseball</div>
+  </div>
+</section>
+
+<!-- FILTERS -->
+<div class="filters">
+  <span class="filter-label">Condition</span>
+  <select class="filter-select" id="condition-select">
+    <option value="all conditions (PSA 10, PSA 9, Near Mint, Lightly Played, Heavily Played)">All conditions</option>
+    <option value="PSA 10 Gem Mint graded">PSA 10 Gem Mint</option>
+    <option value="PSA 9 Mint graded">PSA 9 Mint</option>
+    <option value="Near Mint ungraded">Near Mint</option>
+    <option value="Lightly Played ungraded">Lightly Played</option>
+    <option value="Heavily Played ungraded">Heavily Played</option>
+  </select>
+  <span class="filter-label" style="margin-left:8px">Market</span>
+  <select class="filter-select" id="market-select">
+    <option value="the general collector market (eBay, TCGPlayer, Amazon, PriceCharting)">General market</option>
+    <option value="eBay recent sold listings">eBay sales</option>
+    <option value="TCGPlayer market prices">TCGPlayer</option>
+    <option value="an investment angle with long-term value outlook">Investment angle</option>
+  </select>
+</div>
+
+<!-- STATS BAR -->
+<div class="stats">
+  <div class="stat"><div class="stat-val">2.4M+</div><div class="stat-lbl">Cards Tracked</div></div>
+  <div class="stat"><div class="stat-val">$18.3M</div><div class="stat-lbl">Daily Volume</div></div>
+  <div class="stat"><div class="stat-val">5 Sports</div><div class="stat-lbl">Categories</div></div>
+  <div class="stat"><div class="stat-val">Live</div><div class="stat-lbl">AI Prices</div></div>
+</div>
+
+<!-- MAIN -->
+<main>
+
+  <!-- ERROR -->
+  <div class="error-box" id="error-box"></div>
+
+  <!-- LOADING -->
+  <div class="loading" id="loading">
+    <div class="pokeball"></div>
+    <div class="loading-text" id="loading-text">Searching card markets...</div>
+  </div>
+
+  <!-- RESULTS -->
+  <div id="results"></div>
+
+  <!-- TRENDING -->
+  <section id="trending">
+    <div class="section-hdr">
+      <div class="section-title">Trending Now</div>
+      <a class="see-all" href="#search-section">Search all cards →</a>
+    </div>
+    <div class="trending-grid">
+      <div class="trend-card" onclick="quickSearch('Charizard ex Obsidian Flames','Pokemon')">
+        <div class="trend-img">🔥<span class="trend-badge badge-up">+12%</span></div>
+        <div class="trend-body"><div class="trend-name">Charizard ex</div><div class="trend-set">Obsidian Flames · 2023</div><div class="trend-price">$340</div><div class="trend-cond">NM · raw</div></div>
+      </div>
+      <div class="trend-card" onclick="quickSearch('Umbreon VMAX Alt Art Evolving Skies','Pokemon')">
+        <div class="trend-img">🌙<span class="trend-badge badge-up">+8%</span></div>
+        <div class="trend-body"><div class="trend-name">Umbreon VMAX Alt Art</div><div class="trend-set">Evolving Skies · 2021</div><div class="trend-price">$620</div><div class="trend-cond">NM · raw</div></div>
+      </div>
+      <div class="trend-card" onclick="quickSearch('Patrick Mahomes 2017 rookie','Football (NFL)')">
+        <div class="trend-img">🏈<span class="trend-badge badge-down">-3%</span></div>
+        <div class="trend-body"><div class="trend-name">Mahomes Rookie</div><div class="trend-set">Prizm 2017 · NFL</div><div class="trend-price">$1,240</div><div class="trend-cond">PSA 9</div></div>
+      </div>
+      <div class="trend-card" onclick="quickSearch('Michael Jordan 1986 Fleer rookie','Basketball (NBA)')">
+        <div class="trend-img">🐐<span class="trend-badge badge-up">+5%</span></div>
+        <div class="trend-body"><div class="trend-name">Michael Jordan RC</div><div class="trend-set">Fleer 1986 · NBA</div><div class="trend-price">$8,400</div><div class="trend-cond">PSA 8</div></div>
+      </div>
+      <div class="trend-card" onclick="quickSearch('Alexa Bliss 2015 NXT rookie','WWE Wrestling')">
+        <div class="trend-img">🤼<span class="trend-badge badge-up">+15%</span></div>
+        <div class="trend-body"><div class="trend-name">Alexa Bliss RC</div><div class="trend-set">Topps NXT 2015 · WWE</div><div class="trend-price">$420</div><div class="trend-cond">PSA 10</div></div>
+      </div>
+      <div class="trend-card" onclick="quickSearch('Mickey Mantle 1952 Topps','Baseball (MLB)')">
+        <div class="trend-img">⚾<span class="trend-badge badge-hot">🔥 Grail</span></div>
+        <div class="trend-body"><div class="trend-name">Mickey Mantle</div><div class="trend-set">Topps 1952 · MLB</div><div class="trend-price">$12M</div><div class="trend-cond">PSA 9 · record</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURED CARD -->
+  <section class="featured" id="featured">
+    <div class="section-hdr">
+      <div class="section-title">Featured Card — Mewtwo Gold Star</div>
+      <a class="see-all" href="#" onclick="quickSearch('Mewtwo Gold Star EX Holon Phantoms','Pokemon');return false;">Full research →</a>
+    </div>
+    <div class="featured-card">
+      <div class="featured-hdr">
+        <div>
+          <div class="featured-title">Mewtwo Gold Star · EX Holon Phantoms #103 · 2006</div>
+          <div class="featured-sub">Gold Star · Pull rate 1 in 251 packs · 111 PSA 10s in existence</div>
+        </div>
+        <div class="rarity-badge">Trending Up ↑</div>
+      </div>
+      <div class="price-table">
+        <div class="price-row highlight">
+          <div class="price-cond">⭐ PSA 10 Gem Mint</div>
+          <div class="price-val">$10,500</div>
+          <div class="price-note">+8.2% this month</div>
+          <a class="buy-btn" href="https://www.ebay.com/sch/i.html?_nkw=mewtwo+gold+star+103+holon+phantoms+psa+10" target="_blank">Buy on eBay</a>
+        </div>
+        <div class="price-row">
+          <div class="price-cond">🥈 PSA 9 Mint</div>
+          <div class="price-val">$3,200</div>
+          <div class="price-note">+4.1% this month</div>
+          <a class="buy-btn" href="https://www.ebay.com/sch/i.html?_nkw=mewtwo+gold+star+103+holon+phantoms+psa+9" target="_blank">Buy on eBay</a>
+        </div>
+        <div class="price-row">
+          <div class="price-cond">✅ Near Mint (raw)</div>
+          <div class="price-val">$1,400</div>
+          <div class="price-note">Best value entry</div>
+          <a class="buy-btn" href="https://www.tcgplayer.com/search/pokemon/ex-holon-phantoms?q=mewtwo+gold+star" target="_blank">TCGPlayer</a>
+        </div>
+        <div class="price-row">
+          <div class="price-cond">➖ Lightly Played</div>
+          <div class="price-val">$820</div>
+          <div class="price-note">-1.2% this month</div>
+          <a class="buy-btn" href="https://www.pricecharting.com/game/pokemon-ex-holon-phantoms/mewtwo-gold-star-103" target="_blank">PriceCharting</a>
+        </div>
+        <div class="price-row">
+          <div class="price-cond">⚠️ Heavily Played</div>
+          <div class="price-val">$310</div>
+          <div class="price-note">Grading candidate</div>
+          <a class="buy-btn" href="https://www.amazon.com/s?k=mewtwo+gold+star+holon+phantoms" target="_blank">Amazon</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">
+    <div class="footer-bar"></div>
+    <div class="footer-title">CARD PRICE RESEARCH</div>
+  </div>
+  <div class="footer-links">
+    <a href="#">About</a>
+    <a href="#">Privacy</a>
+    <a href="#">Terms</a>
+    <a href="#">Contact</a>
+    <a href="#">API</a>
+  </div>
+  <div class="footer-copy">© 2026 Card Price Research · Prices for research only</div>
+</footer>
+
+<script>
+const LOADING_MSGS = [
+  'Searching card markets...','Checking recent sales...','Analyzing price trends...',
+  'Consulting the Pokédex...','Scouting eBay listings...','Crunching collector data...'
+];
+let msgIdx = 0, msgTimer = null, activeSport = 'Pokemon';
+
+function setSport(el) {
+  document.querySelectorAll('.sport-pill').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+  activeSport = el.dataset.sport;
+}
+
+function showLoading(on) {
+  const el = document.getElementById('loading');
+  el.style.display = on ? 'block' : 'none';
+  if (on) {
+    msgIdx = 0;
+    document.getElementById('loading-text').textContent = LOADING_MSGS[0];
+    msgTimer = setInterval(() => {
+      msgIdx = (msgIdx + 1) % LOADING_MSGS.length;
+      document.getElementById('loading-text').textContent = LOADING_MSGS[msgIdx];
+    }, 2200);
+  } else {
+    clearInterval(msgTimer);
+  }
+}
+
+function showError(msg) {
+  const el = document.getElementById('error-box');
+  el.textContent = '⚠️ ' + msg;
+  el.style.display = 'block';
+  setTimeout(() => el.style.display = 'none', 7000);
+}
+
+function quickSearch(card, sport) {
+  document.getElementById('search-input').value = card;
+  activeSport = sport;
+  document.querySelectorAll('.sport-pill').forEach(p => {
+    p.classList.toggle('active', p.dataset.sport === sport);
+  });
+  doSearch();
+  document.getElementById('search-section').scrollIntoView({ behavior: 'smooth' });
+}
+
+async function doSearch() {
+  const card = document.getElementById('search-input').value.trim();
+  if (!card) { showError('Please enter a card name to search.'); return; }
+
+  const condition = document.getElementById('condition-select').value;
+  const market    = document.getElementById('market-select').value;
+
+  document.getElementById('results').innerHTML = '';
+  document.getElementById('error-box').style.display = 'none';
+  document.getElementById('search-btn').disabled = true;
+  showLoading(true);
+
+  try {
+    const res = await fetch('/api/search', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ card, sport: activeSport, condition, market })
+    });
+
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error || `Server error ${res.status}`);
+    }
+
+    const data = await res.json();
+    showLoading(false);
+    document.getElementById('search-btn').disabled = false;
+    renderResult(data);
+    document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+  } catch (err) {
+    showLoading(false);
+    document.getElementById('search-btn').disabled = false;
+    showError(err.message || 'Search failed. Please try again.');
+  }
+}
+
+function renderResult(d) {
+  const trendClass = d.trend === 'up' ? 'pill-up' : d.trend === 'down' ? 'pill-down' : 'pill-stable';
+  const trendLabel = d.trend === 'up' ? '📈 Trending Up' : d.trend === 'down' ? '📉 Trending Down' : '➡️ Stable';
+  const confClass  = { high:'conf-high', medium:'conf-medium', low:'conf-low' }[d.data_confidence] || 'conf-medium';
+  const confLabel  = { high:'● High confidence', medium:'● Medium confidence', low:'● Low confidence' }[d.data_confidence] || '';
+
+  const pricesHTML = (d.prices || []).map(p => `
+    <div class="price-row${p.highlight ? ' highlight' : ''}">
+      <div class="price-cond">${p.condition}</div>
+      <div class="price-val">${p.value}</div>
+      <div class="price-note">${p.note || ''}</div>
+      ${d.buy_links?.ebay ? `<a class="buy-btn" href="${d.buy_links.ebay}" target="_blank" rel="noopener">Buy</a>` : ''}
+    </div>`).join('');
+
+  const linksHTML = d.buy_links ? `
+    <div class="buy-links">
+      ${d.buy_links.ebay       ? `<a class="link-btn" href="${d.buy_links.ebay}" target="_blank" rel="noopener">eBay ↗</a>` : ''}
+      ${d.buy_links.tcgplayer  ? `<a class="link-btn" href="${d.buy_links.tcgplayer}" target="_blank" rel="noopener">TCGPlayer ↗</a>` : ''}
+      ${d.buy_links.pricecharting ? `<a class="link-btn" href="${d.buy_links.pricecharting}" target="_blank" rel="noopener">PriceCharting ↗</a>` : ''}
+      ${d.buy_links.amazon     ? `<a class="link-btn" href="${d.buy_links.amazon}" target="_blank" rel="noopener">Amazon ↗</a>` : ''}
+    </div>` : '';
+
+  document.getElementById('results').innerHTML = `
+    <div class="result-card">
+      <div class="result-hdr">
+        <div>
+          <div class="result-name">${d.card_name || d.set || 'Card Results'}</div>
+          <div class="result-meta">${[d.set, d.rarity].filter(Boolean).join(' · ')}</div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+          <span class="trend-pill ${trendClass}">${trendLabel}</span>
+          <span class="${confClass}" style="font-size:11px;font-weight:700;">${confLabel}</span>
+        </div>
+      </div>
+      <div class="price-table">${pricesHTML}</div>
+      <div class="result-footer">
+        ${d.trend_reason ? `<div class="analysis" style="font-weight:600;color:var(--soft);">${d.trend_reason}</div>` : ''}
+        ${d.analysis     ? `<div class="analysis">${d.analysis}</div>` : ''}
+        ${d.buy_tip      ? `<div class="buy-tip">💡 ${d.buy_tip}</div>` : ''}
+        ${linksHTML}
+      </div>
+    </div>`;
+}
+
+document.getElementById('search-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') doSearch();
+});
+</script>
+</body>
+</html>
